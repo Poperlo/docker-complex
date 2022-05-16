@@ -11,6 +11,6 @@ RUN npm run build
 FROM node:14.14.0-alpine
 
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /usr/app/build /usr/share/nginx/html
+COPY --from=builder /usr/app/build /usr/share/nginx/html
 
 EXPOSE 3000
