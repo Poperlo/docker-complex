@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - run: docker build -t poperlo/client-test -f ./client/Dockerfile.dev ./client
-      - run: docker run poperlo/client-test npm run test -- --coverage
+      - run: docker run -e CI=true poperlo/client-test npm run test -- --coverage
       - run: echo HALO CI
 
 #      - run: docker build -t poperlo/client ./client
