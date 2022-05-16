@@ -24,6 +24,11 @@ jobs:
       - run: docker build -t poperlo/server ./server
       - run: docker build -t poperlo/worker ./worker
 
+      - run: docker push poperlo/client
+      - run: docker push poperlo/nginx
+      - run: docker push poperlo/server
+      - run: docker push poperlo/worker
+
 #      - name: Generate deployment package
 #        run: zip -r deploy.zip . -x '*.git"'
 
