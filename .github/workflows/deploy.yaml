@@ -13,10 +13,11 @@ jobs:
       - run: docker build -t poperlo/client-test -f ./client/Dockerfile.dev ./client
       - run: docker run -e CI=true poperlo/client-test npm run test -- --coverage
 
-  build:
+  publish:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - run: docker build -t poperlo/client ./client
       - run: docker build -t poperlo/nginx ./nginx
