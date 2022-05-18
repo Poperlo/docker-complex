@@ -14,7 +14,7 @@ jobs:
 #      - run: docker run -e CI=true poperlo/client-test npm run test -- --coverage
 #
   publish:
-    needs: test
+#    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
