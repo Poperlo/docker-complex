@@ -42,6 +42,7 @@ jobs:
           application_name: docker-complex
           environment_name: Dockercomplex-env
           existing_bucket_name: elasticbeanstalk-us-east-1-557783318123
+          use_existing_version_if_available: true
           version_label:  ${{ github.sha }}
           region: us-east-1
           deployment_package: deploy.zip
