@@ -5,41 +5,43 @@ on:
       - master
 
 jobs:
-  test:
+#  test:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+#      - run: docker build -t poperlo/client-test -f ./client/Dockerfile.dev ./client
+#      - run: docker run -e CI=true poperlo/client-test npm run test -- --coverage
+#
+#  publish:
+#    needs: test
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+#      - run: docker build -t poperlo/client ./client
+#      - run: docker build -t poperlo/nginx ./nginx
+#      - run: docker build -t poperlo/server ./server
+#      - run: docker build -t poperlo/worker ./worker
+#
+#      - run: docker push poperlo/client
+#      - run: docker push poperlo/nginx
+#      - run: docker push poperlo/server
+#      - run: docker push poperlo/worker
+
+  deploy:
+#    needs: publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker build -t poperlo/client-test -f ./client/Dockerfile.dev ./client
-      - run: docker run -e CI=true poperlo/client-test npm run test -- --coverage
-
-  publish:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker build -t poperlo/client ./client
-      - run: docker build -t poperlo/nginx ./nginx
-      - run: docker build -t poperlo/server ./server
-      - run: docker build -t poperlo/worker ./worker
-
-      - run: docker push poperlo/client
-      - run: docker push poperlo/nginx
-      - run: docker push poperlo/server
-      - run: docker push poperlo/worker
-
-#      - name: Generate deployment package
-#        run: zip -r deploy.zip . -x '*.git"'
-
-#      - name: Deploy to EB
-#        uses: einaregilsson/beanstalk-deploy@v20
-#        with:
-#          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-#          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
-#          application_name: docker-spring-server
-#          environment_name: Dockerspringserver-env
-#          existing_bucket_name: elasticbeanstalk-us-east-1-557783318123
-#          version_label:  ${{ github.sha }}
-#          region: us-east-1
-#          deployment_package: deploy.zip
+      - run: zip -r deploy.zip . -x '*.git"'
+      - uses: einaregilsson/beanstalk-deploy@v20
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: docker-complex
+          environment_name: Dockercomplex-env
+          existing_bucket_name: elasticbeanstalk-us-east-1-557783318123
+          version_label:  ${{ github.sha }}
+          region: us-east-1
+          deployment_package: deploy.zip

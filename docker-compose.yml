@@ -1,65 +1,38 @@
 version: '3'
 
 services:
-  postgres:
-    image: postgres
-    environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: node
-
-  redis:
-    image: redis
-
   node-server:
-    depends_on:
-      - postgres
-      - redis
-    build:
-      context: ./server
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /usr/app/node_modules
-      - ./server:/usr/app
+    image: poperlo/server
+    mem_limit: 128m
+    hostname: node-server
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      PGUSER: root
-      PGPASSWORD: root
-      PGHOST: postgres
-      PGPORT: 5432
-      PGDATABASE: node
+      REDIS_HOST: $REDIS_HOST
+      REDIS_PORT: $REDIS_PORT
+      PGUSER: $PGUSER
+      PGPASSWORD: $PGPASSWORD
+      PGHOST: $PGHOST
+      PGPORT: $PGPORT
+      PGDATABASE: $PGDATABASE
 
   node-client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /usr/app/node_modules
-      - ./client:/usr/app
-    environment:
-      WDS_SOCKET_PORT: 0
+    image: poperlo/client
+    mem_limit: 128m
+    hostname: node-client
 
   node-worker:
-    depends_on:
-      - redis
-    build:
-      context: ./worker
-      dockerfile: Dockerfile.dev
-    volumes:
-      - /usr/app/node_modules
-      - ./worker:/usr/app
+    image: poperlo/worker
+    mem_limit: 128m
+    hostname: node-worker
     environment:
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      REDIS_HOST: $REDIS_HOST
+      REDIS_PORT: $REDIS_PORT
 
   nginx:
     depends_on:
       - node-client
       - node-server
-    restart: always
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.dev
+    image: poperlo/nginx
+    mem_limit: 128m
+    hostname: nginx
     ports:
       - "80:80"
